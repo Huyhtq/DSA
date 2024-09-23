@@ -540,41 +540,57 @@ void LinkList::divideIntoPart()
 
 void LinkList::removeZeroSum() {
     Node* curr = pHead;
-    int sum;
 
     while (curr != NULL) {
-        sum = 0;
-        Node* runner = curr;
+        Node* runner = curr->pNext;
+        Node* prevRunner = curr; // Keep track of previous node for runner
 
-        //Calculate sum from curr to end of list
+        bool foundPair = false;
         while (runner != NULL) {
-            sum += runner->Data;
-
-            //If sum ==0 remove all node from curr to runner
-            if (sum == 0) {
-                Node* temp = curr;
-                while (temp != runner->pNext) {
-                    Node* toDelete = temp;
-                    temp = temp->pNext;
-                    delete toDelete;
+            // If the sum of the current node and runner node equals zero
+            if (curr->Data + runner->Data == 0) {
+                // If runner is right after curr
+                if (curr->pNext == runner) {
+                    curr->pNext = runner->pNext; // Bypass the runner node
+                }
+                else {
+                    prevRunner->pNext = runner->pNext; // Bypass runner in the chain
                 }
 
+                // Delete the runner node
+                delete runner;
+
+                // Now delete the current node (since curr + runner = 0)
                 if (curr == pHead) {
-                    pHead = runner->pNext;
+                    pHead = curr->pNext; // Update head if curr is the first node
                 }
+                else {
+                    Node* temp = pHead;
+                    while (temp->pNext != curr) {
+                        temp = temp->pNext;
+                    }
+                    temp->pNext = curr->pNext; // Bypass curr node
+                }
+                delete curr;
 
+                // Reset curr to the next node after the deleted pair
+                curr = pHead;
+                foundPair = true;
 
-                curr = runner->pNext;
+                // Restart the inner loop
                 break;
             }
+
+            prevRunner = runner;
             runner = runner->pNext;
         }
 
-        //If sum not equal to 0 move to next node
-        if (sum != 0) {
+        // Move curr to the next node if no pair was found
+        if (foundPair != true ) {
             curr = curr->pNext;
         }
     }
+
     Display();
 }
 
@@ -611,6 +627,8 @@ void Menu::showMenu()
     do
     {
         system("cls");
+        cout << "Huynh Tran Quoc Huy\n";
+        cout << "22520544\n\n";
         cout << "Main Menu\n";
         cout << "1. Page 1: 8 functions Part 1 \n";
         cout << "2. Page 2: 8 functions Part 2 \n";
