@@ -351,5 +351,6 @@ void Part2() {
     } while (choice != 0);
 }
 int main() {
+    //Part1(); 
     Part2();
 }
